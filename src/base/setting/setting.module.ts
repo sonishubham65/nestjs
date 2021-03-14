@@ -4,6 +4,6 @@ import { SettingService } from './setting.service';
 
 @Module({
   providers: [SettingService, DatabaseConfig],
-  exports: [SettingService],
+  exports: [SettingService, DatabaseConfig],
 })
 export class SettingModule {}
