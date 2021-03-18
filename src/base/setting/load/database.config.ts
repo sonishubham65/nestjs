@@ -5,6 +5,9 @@ export class DatabaseConfig {
   get url() {
     return config.get('databases.postgres.url');
   }
+  get sync() {
+    return config.get('databases.postgres.sync');
+  }
   get entityAutoload() {
     return config.get('databases.postgres.entity.autoload');
   }

@@ -7,16 +7,17 @@ import { connectionName } from './database.constant';
 export class DatabaseService implements TypeOrmOptionsFactory {
   constructor(private settingService: SettingService) {}
   createTypeOrmOptions(): any {
+    console.log(this.settingService.db.sync);
+    console.log(`this.settingService.db.sync`, this.settingService.db.sync);
     return {
       name: connectionName,
       autoLoadEntities: this.settingService.db.entityAutoload,
-      subscribers: [],
-      dropSchema: false,
       type: 'postgres',
       url: this.settingService.db.url,
+      sync: this.settingService.db.sync,
       logger: 'advanced-console',
       migrations: [__dirname + '../../database/migrations/*.ts'],
-      // entities: this.settingService.db.entityPath,
+      entities: [],
       cli: {
         migrationsDir: 'src/base/database/migrations/',
       },

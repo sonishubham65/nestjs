@@ -4,6 +4,6 @@ import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [SettingModule, DatabaseModule],
-  exports: [SettingModule],
+  exports: [SettingModule, DatabaseModule],
 })
 export class BaseModule {}
