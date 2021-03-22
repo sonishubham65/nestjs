@@ -9,7 +9,7 @@ import { DatabaseService } from './database.service';
     TypeOrmModule.forRootAsync({
       name: connectionName,
       useClass: DatabaseService,
-      imports: [SettingModule, DatabaseModule],
+      imports: [SettingModule],
     }),
   ],
   providers: [],
@@ -17,7 +17,6 @@ import { DatabaseService } from './database.service';
     TypeOrmModule.forRootAsync({
       name: connectionName,
       useClass: DatabaseService,
-      imports: [SettingModule, DatabaseModule],
     }),
   ],
 })

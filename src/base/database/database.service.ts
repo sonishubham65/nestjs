@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { TypeOrmOptionsFactory } from '@nestjs/typeorm';
+import { UserEntity } from 'src/domain/user/entity/user.entity';
+import { BaseEntity } from '../entity/base.entity';
 import { SettingService } from '../setting/setting.service';
 import { connectionName } from './database.constant';
 
@@ -16,7 +18,7 @@ export class DatabaseService implements TypeOrmOptionsFactory {
       url: this.settingService.db.url,
       sync: this.settingService.db.sync,
       logger: 'advanced-console',
-      migrations: [__dirname + '../../database/migrations/*.ts'],
+      //migrations: [__dirname + '../../database/migrations/*.ts'],
       entities: [],
       cli: {
         migrationsDir: 'src/base/database/migrations/',

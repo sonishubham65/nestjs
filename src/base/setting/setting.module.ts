@@ -3,7 +3,7 @@ import { DatabaseConfig } from './load/database.config';
 import { SettingService } from './setting.service';
 
 @Module({
-  providers: [SettingService, DatabaseConfig],
-  exports: [SettingService, DatabaseConfig],
+  providers: [SettingService],
+  exports: [SettingService],
 })
 export class SettingModule {}

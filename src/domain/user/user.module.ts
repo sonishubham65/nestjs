@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BaseModule } from 'src/base/base.module';
 import { connectionName } from 'src/base/database/database.constant';
-import { UserEntity } from './entity/user.entity';
+import { SettingService } from 'src/base/setting/setting.service';
 import { UserService } from './user.service';
+import { UserController } from './user.controller';
+import { UserEntityRepository } from './entity/user.entity.repository';
+import { UserEntity } from './entity/user.entity';
 
 @Module({
-  imports: [BaseModule, TypeOrmModule.forFeature([UserEntity], connectionName)],
-  providers: [UserService],
+  imports: [TypeOrmModule.forFeature([UserEntity], connectionName)],
+  providers: [UserService, SettingService],
+  controllers: [UserController],
 })
 export class UserModule {}

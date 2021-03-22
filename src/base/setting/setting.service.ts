@@ -3,5 +3,8 @@ import { DatabaseConfig } from './load/database.config';
 
 @Injectable()
 export class SettingService {
-  constructor(public db: DatabaseConfig) {}
+  db;
+  constructor() {
+    this.db = new DatabaseConfig();
+  }
 }
