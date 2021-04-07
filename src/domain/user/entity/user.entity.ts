@@ -1,8 +1,9 @@
-import { Column, Db, Entity, Index } from 'typeorm';
-import { BaseEntity } from 'src/base/entity/base.entity';
+import { BaseEntity } from '../../../base/entity/base.entity';
+import { Column, Entity, Index } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 @Entity()
+@Index(['first_name', 'last_name']) // Multiple column index
 export class UserEntity extends BaseEntity {
   @Column()
   first_name: string;
@@ -11,10 +12,9 @@ export class UserEntity extends BaseEntity {
   last_name: string;
 
   @Column()
-  @Index({})
+  @Index({ unique: true }) // Unique Column index
   email: string;
 
-  @Column()
-  @Exclude()
+  @Column({ select: false })
   password: string;
 }

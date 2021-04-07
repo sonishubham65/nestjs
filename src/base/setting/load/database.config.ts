@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
 import * as config from 'config';
+import { UserEntity } from '../../../domain/user/entity/user.entity';
 
 export class DatabaseConfig {
   constructor() {}
@@ -14,5 +14,32 @@ export class DatabaseConfig {
   }
   get entityPath() {
     return config.get('databases.postgres.entity.path');
+  }
+  get dropSchema() {
+    return config.get('databases.postgres.dropSchema');
+  }
+  get migrationRun() {
+    return config.get('databases.postgres.migration.run');
+  }
+  typeormconfig(
+    entities = [
+      '../../../domain/**/**/*.entity.ts',
+      '../../../domain/**/*.entity.ts',
+      'dist/src/domain/**/**/*.entity.ts',
+    ],
+  ) {
+    return {
+      type: 'postgres',
+      url: this.url,
+      sync: this.sync,
+      logger: 'advanced-console',
+      dropSchema: this.dropSchema,
+      migrations: [__dirname + '/../../database/migration/*.ts'],
+      entities: entities,
+      migrationsRun: this.migrationRun,
+      cli: {
+        migrationsDir: 'src/base/database/migration/',
+      },
+    };
   }
 }

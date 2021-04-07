@@ -1,4 +1,4 @@
-import { BaseEntityRepository } from 'src/base/entity/base.entity.repository';
+import { BaseEntityRepository } from '../../../base/entity/base.entity.repository';
 import { EntityRepository } from 'typeorm';
 import { UserEntity } from './user.entity';
 
