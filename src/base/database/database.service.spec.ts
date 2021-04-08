@@ -8,7 +8,7 @@ describe('DatabaseService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [BaseModule, DatabaseModule],
+      imports: [DatabaseModule],
     }).compile();
 
     service = module.get<DatabaseService>(DatabaseService);
