@@ -40,6 +40,8 @@ export class DatabaseConfig {
       cli: {
         migrationsDir: 'src/base/database/migration/',
       },
+      extra: { max: 3 },
+      maxQueryExecutionTime: 1000,
     };
   }
 }

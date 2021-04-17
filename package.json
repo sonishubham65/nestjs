@@ -18,7 +18,13 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "cli": "CLI_PATH=./dist/cli.js nestjs-command",
+    "cli:dev": "nestjs-command",
+    "typeorm": "ts-node ./node_modules/.bin/typeorm --config ormconfig.ts --connection postgres_connection1",
+    "db:migration:generate": "yarn typeorm migration:generate -n first",
+    "db:migrate": "npx nestjs-command db:migrate",
+    "db:seed": "npx nestjs-command db:seed"
   },
   "dependencies": {
     "@nestjs/common": "^7.5.1",
@@ -32,6 +38,7 @@
     "config": "^3.3.6",
     "ioredis": "^4.25.0",
     "mysql2": "^2.2.5",
+    "nestjs-command": "^2.0.0",
     "nestjs-throttler-storage-redis": "^0.1.13",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
