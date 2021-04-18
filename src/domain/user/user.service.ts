@@ -18,7 +18,7 @@ export class UserService {
     );
   }
   url() {
-    console.log(this.settingService.db.url);
+    return this.settingService.db.url;
   }
   async get(id) {
     return await this.userEntityRepositry.findOne({
