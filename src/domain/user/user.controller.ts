@@ -3,13 +3,16 @@ import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {
-    this.userService.url();
+  constructor(private userService: UserService) {}
+
+  @Get()
+  async users() {
+    return await this.userService.findAll();
   }
 
   @Get(':id')
   async user(@Param() param) {
-    return await this.userService.get(param.id);
+    return await this.userService.findOne(param.id);
   }
 
   @Post()

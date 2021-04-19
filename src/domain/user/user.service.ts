@@ -17,14 +17,20 @@ export class UserService {
       connection.name,
     );
   }
-  url() {
-    return this.settingService.db.url;
+
+  async findAll() {
+    return await this.userEntityRepositry.find({
+      where: {},
+      take: 10,
+    });
   }
-  async get(id) {
+
+  async findOne(id) {
     return await this.userEntityRepositry.findOne({
       id: id,
     });
   }
+
   async create(body) {
     return await this.userEntityRepositry.insert(body);
   }

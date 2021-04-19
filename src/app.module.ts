@@ -8,17 +8,17 @@ import { DomainModule } from './domain/domain.module';
 import { APP_GUARD } from '@nestjs/core';
 const Redis = require('ioredis');
 
-const cluster = new Redis({
-  host: 'localhost',
-  port: 6379,
-});
+// const cluster = new Redis({
+//   host: 'localhost',
+//   port: 6379,
+// });
 export class AppModule {
   static forRoot(): DynamicModule {
     const modulesToImport = [
       ThrottlerModule.forRoot({
         ttl: 10,
         limit: 30,
-        storage: new ThrottlerStorageRedisService(cluster),
+        //storage: new ThrottlerStorageRedisService(cluster),
       }),
       BaseModule,
       DomainModule,
