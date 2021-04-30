@@ -22,8 +22,8 @@ describe('User', () => {
       .get('/user/81b83657-e685-46c0-b8f0-6144f3686195/')
       .expect(200)
       .then((data) => {
-        expect(data.status);
         expect(data.status).to.be.equal(200);
+        expect(data.body).to.be.an('object');
         expect(data.body).to.have.property('id');
         expect(data.body).to.have.property('version');
         expect(data.body).to.have.property('updatedAt');
@@ -48,7 +48,9 @@ describe('User', () => {
       })
       .expect(201)
       .then((data) => {
+        expect(data.body).to.be.an('object');
         expect(data.body).to.have.property('identifiers');
+        expect(data.body.identifiers).to.be.an('array');
         expect(data.body.identifiers[0]).to.have.property('id');
       })
       .catch((e) => {
@@ -61,7 +63,7 @@ describe('User', () => {
       .get('/user')
       .expect(200)
       .then((data) => {
-        expect(data.body).to.be.an.instanceOf(Array);
+        expect(data.body).to.be.an('array');
       })
       .catch((e) => {
         console.log(`e`, e);

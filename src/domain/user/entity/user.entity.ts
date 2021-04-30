@@ -1,6 +1,6 @@
 import { BaseEntity } from '../../../base/entity/base.entity';
-import { Column, Entity, Index } from 'typeorm';
-import { Exclude } from 'class-transformer';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
+import { PropertyEntity } from '../../../../src/domain/property/entity/property.entity';
 
 @Entity()
 @Index(['first_name', 'last_name']) // Multiple column index
@@ -17,4 +17,7 @@ export class UserEntity extends BaseEntity {
 
   @Column({ select: false })
   password: string;
+
+  @OneToMany((type) => PropertyEntity, (property) => property.user)
+  properties: PropertyEntity[];
 }
