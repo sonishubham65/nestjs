@@ -34,4 +34,19 @@ export class PropertyService {
   async create(body) {
     return await this.propertyEntityRepositry.insert(body);
   }
+
+  async update(id, body) {
+    return await this.propertyEntityRepositry.update(
+      {
+        id: id,
+      },
+      body,
+    );
+  }
+
+  async delete(id) {
+    return await this.propertyEntityRepositry.softDelete({
+      id: id,
+    });
+  }
 }

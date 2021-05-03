@@ -1,6 +1,7 @@
 import { BaseEntity } from '../../../base/entity/base.entity';
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { UserEntity } from '../../../../src/domain/user/entity/user.entity';
+import { PropertyType } from './property.type.enum';
 
 @Entity()
 export class PropertyEntity extends BaseEntity {
@@ -21,4 +22,11 @@ export class PropertyEntity extends BaseEntity {
 
   @ManyToOne((type) => UserEntity, (user) => user.properties)
   user: UserEntity;
+
+  @Column({
+    type: 'enum',
+    enum: PropertyType,
+    default: PropertyType['House/Villa'],
+  })
+  type: PropertyType;
 }

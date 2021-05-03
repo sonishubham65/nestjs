@@ -1,5 +1,6 @@
 import {
   CreateDateColumn,
+  DeleteDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   VersionColumn,
@@ -17,4 +18,7 @@ export abstract class BaseEntity {
 
   @CreateDateColumn()
   createdAt: string;
+
+  @DeleteDateColumn()
+  deletedAt: string;
 }
