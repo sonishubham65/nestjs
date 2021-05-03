@@ -34,4 +34,8 @@ export class UserService {
   async create(body) {
     return await this.userEntityRepositry.insert(body);
   }
+
+  async delete(id) {
+    return await this.userEntityRepositry.softDelete({ id: id });
+  }
 }

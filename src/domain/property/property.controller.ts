@@ -14,8 +14,13 @@ import { PropertyService } from './property.service';
 export class PropertyController {
   constructor(private propertyService: PropertyService) {}
   @Get()
-  async users() {
+  async properties() {
     return await this.propertyService.findAll();
+  }
+
+  @Get('/:id')
+  async property(@Param() param) {
+    return await this.propertyService.findOne(param.id);
   }
 
   @Get(':id')
@@ -27,7 +32,7 @@ export class PropertyController {
   async create(@Body() body) {
     return await this.propertyService.create({
       ...body,
-      user: 'dfa5af0c-e118-40e9-ba5a-2825d8c7a5a1',
+      user: 'd07bbdb4-97e6-4675-8d8b-259d31fb744d',
       type: PropertyType[body.type],
     });
   }

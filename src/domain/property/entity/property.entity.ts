@@ -20,7 +20,10 @@ export class PropertyEntity extends BaseEntity {
   @Column()
   address: string;
 
-  @ManyToOne((type) => UserEntity, (user) => user.properties)
+  @ManyToOne((type) => UserEntity, (user) => user.properties, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   user: UserEntity;
 
   @Column({
