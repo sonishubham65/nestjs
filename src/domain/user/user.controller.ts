@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import * as moment from 'moment-timezone';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -17,7 +18,7 @@ export class UserController {
 
   @Post()
   async create(@Body() body) {
-    return await this.userService.create(body);
+    return await this.userService.create({ ...body });
   }
 
   @Delete('/:id')

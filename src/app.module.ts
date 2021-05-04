@@ -6,12 +6,16 @@ import { AppService } from './app.service';
 import { BaseModule } from './base/base.module';
 import { DomainModule } from './domain/domain.module';
 import { APP_GUARD } from '@nestjs/core';
+
+import * as moment from 'moment-timezone';
+//console.log(JSON.stringify(moment.tz.names()));
+
 const Redis = require('ioredis');
 
-// const cluster = new Redis({
-//   host: 'localhost',
-//   port: 6379,
-// });
+const cluster = new Redis({
+  host: 'localhost',
+  port: 6379,
+});
 export class AppModule {
   static forRoot(): DynamicModule {
     const modulesToImport = [

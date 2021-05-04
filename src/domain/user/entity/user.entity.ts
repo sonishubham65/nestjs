@@ -11,6 +11,9 @@ export class UserEntity extends BaseEntity {
   @Column()
   last_name: string;
 
+  @Column({ type: 'timestamptz', default: '1950-01-01T00:00:00.000+00:00' })
+  dob: Date;
+
   @Column()
   @Index({ unique: true }) // Unique Column index
   email: string;

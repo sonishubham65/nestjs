@@ -28,11 +28,13 @@ export class DatabaseConfig {
       'dist/src/domain/**/**/*.entity.ts',
     ],
   ) {
+    console.log('timezone', process.env.TZ);
     return {
       type: 'postgres',
       url: this.url,
       sync: this.sync,
       logger: 'advanced-console',
+      logging: true,
       dropSchema: this.dropSchema,
       migrations: [__dirname + '/../../database/migration/*.ts'],
       entities: entities,
