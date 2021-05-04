@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 import * as moment from 'moment-timezone';
 import { UserService } from './user.service';
 
@@ -18,6 +27,8 @@ export class UserController {
 
   @Post()
   async create(@Body() body) {
+    //throw new HttpException('Already exists.', HttpStatus.CONFLICT);
+    //throw new HttpException({ message: 'Already exists.', a: 1 }, HttpStatus.CONFLICT);
     return await this.userService.create({ ...body });
   }
 
