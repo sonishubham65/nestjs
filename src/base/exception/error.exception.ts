@@ -20,7 +20,6 @@ export class ErrorException implements ExceptionFilter {
     let body: any =
       exception instanceof HttpException ? exception.getResponse() : {};
 
-    console.log(`body`, typeof body);
     const message: any =
       exception['detail'] ||
       exception['message'] ||

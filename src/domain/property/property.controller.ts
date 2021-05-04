@@ -10,7 +10,6 @@ import {
 import { PropertyType } from './entity/property.type.enum';
 import { PropertyService } from './property.service';
 import * as moment from 'moment-timezone';
-console.log(`moment.tz()`, moment.tz.guess());
 @Controller('property')
 export class PropertyController {
   constructor(private propertyService: PropertyService) {}

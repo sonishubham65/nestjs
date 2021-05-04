@@ -21,6 +21,9 @@ export class DatabaseConfig {
   get migrationRun() {
     return config.get('databases.postgres.migration.run');
   }
+  get logging() {
+    return config.get('databases.postgres.logging');
+  }
   typeormconfig(
     entities = [
       '../../../domain/**/**/*.entity.ts',
@@ -28,13 +31,12 @@ export class DatabaseConfig {
       'dist/src/domain/**/**/*.entity.ts',
     ],
   ) {
-    console.log('timezone', process.env.TZ);
     return {
       type: 'postgres',
       url: this.url,
       sync: this.sync,
       logger: 'advanced-console',
-      logging: true,
+      logging: this.logging,
       dropSchema: this.dropSchema,
       migrations: [__dirname + '/../../database/migration/*.ts'],
       entities: entities,
