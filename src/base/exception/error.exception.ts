@@ -31,6 +31,8 @@ export class ErrorException implements ExceptionFilter {
       body = { message };
     }
 
+    console.log(body);
+
     response.status(status).json({
       ...body,
     });

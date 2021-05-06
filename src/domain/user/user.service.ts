@@ -31,6 +31,17 @@ export class UserService {
     });
   }
 
+  async findByEmail(email) {
+    return await this.userEntityRepositry.findOne(
+      {
+        email: email,
+      },
+      {
+        select: ['id', 'email', 'password', 'dob'],
+      },
+    );
+  }
+
   async create(body) {
     return await this.userEntityRepositry.insert(body);
   }

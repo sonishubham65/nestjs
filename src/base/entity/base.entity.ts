@@ -16,7 +16,7 @@ export abstract class BaseEntity {
   @UpdateDateColumn()
   updatedAt: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ update: false })
   createdAt: string;
 
   @DeleteDateColumn()

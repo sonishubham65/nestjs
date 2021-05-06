@@ -8,12 +8,16 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import * as moment from 'moment-timezone';
+import { SettingService } from 'src/base/setting/setting.service';
+import * as bcrypt from 'bcrypt';
 import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private settingService: SettingService,
+  ) {}
 
   @Get()
   async users() {
@@ -29,11 +33,25 @@ export class UserController {
   async create(@Body() body) {
     //throw new HttpException('Already exists.', HttpStatus.CONFLICT);
     //throw new HttpException({ message: 'Already exists.', a: 1 }, HttpStatus.CONFLICT);
+
+    body.password = await bcrypt.hash(
+      body.password,
+      this.settingService.secret.saltRound,
+    );
     return await this.userService.create({ ...body });
   }
 
-  @Delete('/:id')
-  async delete(@Param() param) {
-    return await this.userService.delete(param.id);
+  @Post('/login')
+  async login(@Body() body) {
+    const user = await this.userService.findByEmail(body.email);
+    if (!user) {
+      throw new HttpException('User does not exists.', HttpStatus.NO_CONTENT);
+    }
+    const isMatch = await bcrypt.compare(body.password, user.password);
+    if (isMatch) {
+      return { message: 'logged in' };
+    } else {
+      throw new HttpException('Wrong password.', HttpStatus.UNAUTHORIZED);
+    }
   }
 }
