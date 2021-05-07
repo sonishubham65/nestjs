@@ -7,12 +7,7 @@ import { BaseModule } from './base/base.module';
 import { DomainModule } from './domain/domain.module';
 import { APP_GUARD } from '@nestjs/core';
 
-import * as moment from 'moment-timezone';
-import { AuthModule } from './base/auth/auth.module';
-//console.log(JSON.stringify(moment.tz.names()));
-
 const Redis = require('ioredis');
-
 const cluster = new Redis({
   host: 'localhost',
   port: 6379,
@@ -22,8 +17,8 @@ export class AppModule {
     const modulesToImport = [
       ThrottlerModule.forRoot({
         ttl: 10,
-        limit: 30,
-        //storage: new ThrottlerStorageRedisService(cluster),
+        limit: 50,
+        storage: new ThrottlerStorageRedisService(cluster),
       }),
       BaseModule,
       DomainModule,

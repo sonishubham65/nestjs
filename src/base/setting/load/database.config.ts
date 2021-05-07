@@ -1,5 +1,4 @@
 import * as config from 'config';
-import { UserEntity } from '../../../domain/user/entity/user.entity';
 
 export class DatabaseConfig {
   constructor() {}
