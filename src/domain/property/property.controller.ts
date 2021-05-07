@@ -6,10 +6,12 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { PropertyType } from './entity/property.type.enum';
 import { PropertyService } from './property.service';
 import * as moment from 'moment-timezone';
+import { JwtAuthGuard } from '../../base/auth/jwt-auth.guard';
 @Controller('property')
 export class PropertyController {
   constructor(private propertyService: PropertyService) {}
@@ -23,6 +25,7 @@ export class PropertyController {
     return await this.propertyService.findOne(param.id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() body) {
     const response = await this.propertyService.create({

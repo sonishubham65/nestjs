@@ -8,6 +8,7 @@ import { DomainModule } from './domain/domain.module';
 import { APP_GUARD } from '@nestjs/core';
 
 import * as moment from 'moment-timezone';
+import { AuthModule } from './base/auth/auth.module';
 //console.log(JSON.stringify(moment.tz.names()));
 
 const Redis = require('ioredis');
