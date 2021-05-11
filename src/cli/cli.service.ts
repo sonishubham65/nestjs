@@ -48,9 +48,7 @@ export class CliService {
       await this.dbDrop();
     }
     console.log('Running migrations for SQL');
-    await CliService.runProcess(
-      'npm --scripts-prepend-node-path=true run typeorm -- migration:run',
-    );
+    await CliService.runProcess('yarn typeorm -- migration:run');
   }
 
   private static async runProcess(command) {

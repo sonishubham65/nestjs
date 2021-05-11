@@ -6,8 +6,8 @@ export = [
   {
     name: connectionName,
     ...settingService.db.typeormconfig([
-      'src/domain/**/**/*.entity.ts',
-      'src/domain/**/*.entity.ts',
+      'src/domain/**/**/*.entity.{js,ts}',
+      'src/domain/**/*.entity.{js,ts}',
     ]),
   },
 ];

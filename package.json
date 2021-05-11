@@ -23,7 +23,7 @@
     "cli:dev": "nestjs-command",
     "typeorm": "ts-node ./node_modules/.bin/typeorm --config ormconfig.ts --connection postgres_connection1",
     "db:migration:generate": "yarn typeorm migration:generate -n first",
-    "db:migrate": "npx nestjs-command db:migrate",
+    "db:migrate": "yarn typeorm -- migration:run",
     "db:seed": "npx nestjs-command db:seed"
   },
   "dependencies": {
