@@ -23,6 +23,12 @@ export class DatabaseConfig {
   get logging() {
     return config.get('databases.postgres.logging');
   }
+  get redisHost() {
+    return config.get('databases.redis.host');
+  }
+  get redisPort() {
+    return config.get('databases.redis.port');
+  }
   typeormconfig(
     entities = [
       '../../../domain/**/**/*.entity.ts',

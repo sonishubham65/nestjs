@@ -1,24 +1,43 @@
-version: '3.0'
+version: '3'
+
 services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
+    environment:
+      - PORT=3000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PW=crudjs
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    links:
+      - postgres:postgres
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:dev
+
+  postgres:
+    image: postgres:12
+    restart: always
+    environment:
+      - DB_USER=postgres
+      - DB_PASS=Pass@123
+    ports:
+      - 5436:5432
+    volumes:
+      - db:/var/lib/postgresql/datax
   redis:
-    container_name: redisx
+    container_name: redis
     image: redis
     ports:
       - 6380:6379
-  postgres:
-    container_name: postgresx
-    image: postgres:12
-    environment:
-      POSTGRES_PASSWORD: Pass@123
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
-    ports:
-      - 5435:5432
-  nest:
-    build: .
-    ports:
-      - '3000:3000'
-    depends_on:
-      - redis
-      - postgres
-    command: 'npm run start'
+volumes:
+  db:

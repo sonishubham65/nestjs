@@ -6,14 +6,14 @@ import { AppService } from './app.service';
 import { BaseModule } from './base/base.module';
 import { DomainModule } from './domain/domain.module';
 import { APP_GUARD } from '@nestjs/core';
-
-const Redis = require('ioredis');
-const cluster = new Redis({
-  host: 'localhost',
-  port: 6379,
-});
+import { SettingService } from './base/setting/setting.service';
 export class AppModule {
-  static forRoot(): DynamicModule {
+  static forRoot(settingService: SettingService): DynamicModule {
+    const Redis = require('ioredis');
+    const cluster = new Redis({
+      host: settingService.db.redisHost,
+      port: settingService.db.redisPort,
+    });
     const modulesToImport = [
       ThrottlerModule.forRoot({
         ttl: 10,
