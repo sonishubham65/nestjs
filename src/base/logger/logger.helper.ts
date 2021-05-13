@@ -31,7 +31,6 @@ export class LoggerHelper {
   userId;
   constructor(req) {
     this.requestId = req.uuid;
-    this.userId = req.userId;
   }
 
   logging(level, ...data) {
@@ -55,7 +54,6 @@ export class LoggerHelper {
 
     log.userId = this.userId;
     log.requestId = this.requestId;
-    console.log(`Logger`, log);
     logger[level](log);
   }
 
