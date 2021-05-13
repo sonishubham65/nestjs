@@ -6,12 +6,20 @@ import {
   Param,
   Post,
   Put,
+  Request,
+  UploadedFile,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PropertyType } from './entity/property.type.enum';
 import { PropertyService } from './property.service';
 import * as moment from 'moment-timezone';
 import { JwtAuthGuard } from '../../base/auth/jwt-auth.guard';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 @Controller('property')
 export class PropertyController {
   constructor(private propertyService: PropertyService) {}
@@ -27,24 +35,24 @@ export class PropertyController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() body) {
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'cover', maxCount: 1 },
+      { name: 'related[]', maxCount: 3 },
+    ]),
+  )
+  async create(
+    @Request() req,
+    @Body() body,
+    @UploadedFile() images: Array<Express.Multer.File>,
+    @UploadedFiles() related: Array<Express.Multer.File>,
+  ) {
+    console.log(`req.user.id`, req.user.id);
     const response = await this.propertyService.create({
       ...body,
-      user: '60c8ade1-51d1-4d6e-8d5f-447c9577a546',
+      userId: req.user.id,
       type: PropertyType[body.type],
     });
-    const time = moment(response.generatedMaps[0].createdAt).tz(
-      'Asia/Calcutta',
-    );
-    console.log(
-      `time`,
-      time,
-      response.generatedMaps[0].createdAt,
-      moment(time).tz('Asia/Calcutta'),
-    );
-    response.generatedMaps[0].createdAt = moment(time)
-      .tz('Asia/Calcutta')
-      .format('YYYY-MM-DD HH:mm:ss');
     return response;
   }
 

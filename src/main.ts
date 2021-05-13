@@ -11,12 +11,9 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule.forRoot(settingService),
     {
-      bodyParser: true,
       cors: true,
     },
   );
-  app.use(urlencoded({ extended: true }));
-  app.use(json());
   app.use(LoggerMiddleware);
   app.useGlobalFilters(new ErrorException());
   await app.listen(3000);

@@ -1,5 +1,5 @@
 import { BaseEntity } from '../../../base/entity/base.entity';
-import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { UserEntity } from '../../../../src/domain/user/entity/user.entity';
 import { PropertyType } from './property.type.enum';
 
@@ -19,6 +19,9 @@ export class PropertyEntity extends BaseEntity {
 
   @Column()
   address: string;
+
+  @Column({ nullable: true })
+  userId: string;
 
   @ManyToOne((type) => UserEntity, (user) => user.properties, {
     cascade: true,

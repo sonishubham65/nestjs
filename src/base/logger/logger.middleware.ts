@@ -11,7 +11,7 @@ export function LoggerMiddleware(req, res, next) {
     const token: any = jwt.decode(
       req.headers.authorization.replace(/^Bearer\s/, ''),
     );
-    if (token) req.userId = token.user_id;
+    if (token) req.userId = token.id;
   }
 
   // Setup logger user Id.
