@@ -11,18 +11,31 @@ import {
   UploadedFiles,
   UseGuards,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { PropertyType } from './entity/property.type.enum';
 import { PropertyService } from './property.service';
-import * as moment from 'moment-timezone';
 import { JwtAuthGuard } from '../../base/auth/jwt-auth.guard';
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-} from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { Storage } from '@google-cloud/storage';
+import { SettingService } from 'src/base/setting/setting.service';
+import { PropertyAdd } from './property.dto';
+const storage = new Storage();
+
 @Controller('property')
 export class PropertyController {
-  constructor(private propertyService: PropertyService) {}
+  bucket;
+  constructor(
+    private propertyService: PropertyService,
+    private settingService: SettingService,
+  ) {
+    console.log(
+      `this.settingService.bucket.name`,
+      this.settingService.bucket.name,
+    );
+    this.bucket = storage.bucket(this.settingService.bucket.name);
+  }
   @Get()
   async properties() {
     return await this.propertyService.findAll();
@@ -41,17 +54,27 @@ export class PropertyController {
       { name: 'related[]', maxCount: 3 },
     ]),
   )
+  @UsePipes(new ValidationPipe({ transform: true }))
   async create(
     @Request() req,
-    @Body() body,
-    @UploadedFile() images: Array<Express.Multer.File>,
+    @Body() body: PropertyAdd,
+    @UploadedFile() cover: Array<Express.Multer.File>,
     @UploadedFiles() related: Array<Express.Multer.File>,
   ) {
-    console.log(`req.user.id`, req.user.id);
+    console.log(`title`, body.title);
+    // console.log(`cover`, cover);
+    // console.log(`related`, related);
+    // Create a new blob in the bucket and upload the file data.
+    // const blob = this.bucket.file(req.file.originalname);
+    // const blobStream = blob.createWriteStream();
+
+    // await this.bucket.upload(cover, {
+    //   destination: this.settingService.bucket.propertyFolder,
+    // });
     const response = await this.propertyService.create({
       ...body,
       userId: req.user.id,
-      type: PropertyType[body.type],
+      type: body.type,
     });
     return response;
   }
