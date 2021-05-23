@@ -20,7 +20,7 @@ export class PropertyEntity extends BaseEntity {
   @Column()
   address: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, select: false })
   userId: string;
 
   @ManyToOne((type) => UserEntity, (user) => user.properties, {
@@ -35,4 +35,7 @@ export class PropertyEntity extends BaseEntity {
     default: PropertyType['House/Villa'],
   })
   type: PropertyType;
+
+  @Column({ nullable: true, length: 300 })
+  cover: string;
 }

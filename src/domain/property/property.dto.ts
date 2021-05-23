@@ -22,8 +22,8 @@ import { IsValidString } from 'src/base/decorators/string.decorator';
 import { PropertyType } from './entity/property.type.enum';
 
 export class PropertyAdd {
-  @Transform((val) => val.value?.trim())
   @IsNotEmpty()
+  @Transform((val) => val.value?.trim())
   @MinLength(3)
   @MaxLength(100)
   @IsString()

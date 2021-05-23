@@ -5,8 +5,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BaseModule } from './base/base.module';
 import { DomainModule } from './domain/domain.module';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { SettingService } from './base/setting/setting.service';
+import { LoggerInterceptor } from './base/logger/logger.interceptor';
 export class AppModule {
   static forRoot(settingService: SettingService): DynamicModule {
     const Redis = require('ioredis');
@@ -31,6 +32,10 @@ export class AppModule {
         {
           provide: APP_GUARD,
           useClass: ThrottlerGuard,
+        },
+        {
+          provide: APP_INTERCEPTOR,
+          useClass: LoggerInterceptor,
         },
       ],
       controllers: [AppController],

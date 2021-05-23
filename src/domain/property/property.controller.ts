@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Request,
@@ -17,24 +18,29 @@ import {
 import { PropertyType } from './entity/property.type.enum';
 import { PropertyService } from './property.service';
 import { JwtAuthGuard } from '../../base/auth/jwt-auth.guard';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 import { Storage } from '@google-cloud/storage';
 import { SettingService } from 'src/base/setting/setting.service';
 import { PropertyAdd } from './property.dto';
+import { v4 as uuid } from 'uuid';
+import { Roles } from '../user/user.role.decorator';
+import { Role } from '../role/enum.role';
+import { RoleGuard } from '../role/role.guard';
 const storage = new Storage();
 
 @Controller('property')
 export class PropertyController {
   bucket;
+  bucketName;
   constructor(
     private propertyService: PropertyService,
     private settingService: SettingService,
   ) {
-    console.log(
-      `this.settingService.bucket.name`,
-      this.settingService.bucket.name,
-    );
-    this.bucket = storage.bucket(this.settingService.bucket.name);
+    this.bucketName = this.settingService.bucket.name;
+    this.bucket = storage.bucket(this.bucketName);
   }
   @Get()
   async properties() {
@@ -46,37 +52,58 @@ export class PropertyController {
     return await this.propertyService.findOne(param.id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post()
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'cover', maxCount: 1 },
-      { name: 'related[]', maxCount: 3 },
-    ]),
-  )
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
-  async create(
-    @Request() req,
-    @Body() body: PropertyAdd,
-    @UploadedFile() cover: Array<Express.Multer.File>,
-    @UploadedFiles() related: Array<Express.Multer.File>,
-  ) {
-    console.log(`title`, body.title);
-    // console.log(`cover`, cover);
-    // console.log(`related`, related);
-    // Create a new blob in the bucket and upload the file data.
-    // const blob = this.bucket.file(req.file.originalname);
-    // const blobStream = blob.createWriteStream();
-
-    // await this.bucket.upload(cover, {
-    //   destination: this.settingService.bucket.propertyFolder,
-    // });
-    const response = await this.propertyService.create({
+  async create(@Request() req, @Body() body: PropertyAdd) {
+    return await this.propertyService.create({
       ...body,
       userId: req.user.id,
       type: body.type,
     });
-    return response;
+  }
+
+  @Patch('/:id/cover/')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(Role.User, Role.Admin)
+  @UseInterceptors(FileInterceptor('cover'))
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async cover(
+    @Request() req,
+    @Param() param,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    const url = await new Promise((resolve, reject) => {
+      try {
+        const folderName = 'properties/cover';
+        const filePath = `${folderName}/${uuid()}-${image.originalname}`;
+
+        // Create a new blob in the bucket and upload the file data.
+        const blob = this.bucket.file(filePath);
+        const blobStream = blob.createWriteStream();
+
+        blobStream.on('error', (err) => {
+          reject(err);
+        });
+
+        blobStream.on('finish', async () => {
+          try {
+            await blob.makePublic();
+            const publicUrl = `https://storage.googleapis.com/${this.bucketName}/${filePath}`;
+            resolve(publicUrl);
+          } catch (e) {
+            reject(e);
+          }
+        });
+
+        blobStream.end(image.buffer);
+      } catch (e) {
+        reject(e);
+      }
+    });
+    return await this.propertyService.update(param.id, {
+      cover: url,
+    });
   }
 
   @Put('/:id')

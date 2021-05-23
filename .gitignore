@@ -37,3 +37,4 @@ lerna-debug.log*
 
 config/local.*
 node_modules
+serviceaccount.json

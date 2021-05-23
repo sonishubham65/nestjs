@@ -2,14 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/typeorm';
 import { connectionName } from '../../base/database/database.constant';
 import { SettingService } from '../../base/setting/setting.service';
-import { Connection, getCustomRepository } from 'typeorm';
+import {
+  Connection,
+  EntityManager,
+  getCustomRepository,
+  Transaction,
+} from 'typeorm';
 import { UserEntityRepository } from './entity/user.entity.repository';
 
 @Injectable()
 export class UserService {
   userEntityRepositry;
   constructor(
-    @InjectConnection(connectionName) connection: Connection,
+    @InjectConnection(connectionName) private connection: Connection,
     private settingService: SettingService,
   ) {
     this.userEntityRepositry = getCustomRepository(
@@ -42,8 +47,11 @@ export class UserService {
     );
   }
 
-  async create(body) {
-    return await this.userEntityRepositry.insert(body);
+  async create(body, manager: EntityManager) {
+    return await (manager
+      ? manager.getCustomRepository(this.userEntityRepositry)
+      : this.userEntityRepositry
+    ).insert(body);
   }
 
   async delete(id) {

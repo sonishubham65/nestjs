@@ -8,7 +8,7 @@ export function IsValidString(args: any = {}) {
       propertyName,
       validator: {
         validate(value: any) {
-          return value.match(/^[a-zA-Z0-9 @$%&./#*,()+\-'|?]*$/);
+          return value?.match(/^[a-zA-Z0-9 @$%&./#*,()+\-'|?]*$/);
         },
         defaultMessage: buildMessage((eachPrefix) => {
           console.log(`eachPrefix`, propertyName);

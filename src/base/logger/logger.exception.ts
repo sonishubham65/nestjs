@@ -21,18 +21,22 @@ export class LoggerException implements ExceptionFilter {
       exception instanceof HttpException ? exception.getResponse() : {};
 
     const message: any =
-      body.message ||
-      exception['message'] ||
-      exception['detail'] ||
       "Something went wrong, We're working on getting it fixed as soon as we can.";
+    let log: object;
 
-    if (typeof body !== 'object') {
-      body = { message };
+    const isValidBody = Object.keys(body).length;
+    if (isValidBody) {
+      log = { body };
+    } else {
+      log = {
+        exception_message: exception['message'],
+        exception_detail: exception['detail'],
+        exception_stack: exception.stack,
+        message: message,
+      };
     }
 
-    request.logger.info('Exception Caught Error', body);
-    response.status(status).json({
-      ...body,
-    });
+    request.logger.info('Exception Caught Error', log);
+    response.status(status).json(isValidBody ? body : { message });
   }
 }
