@@ -5,8 +5,8 @@ import { connectionName } from 'src/base/database/database.constant';
 import { SettingService } from 'src/base/setting/setting.service';
 import { PropertyEntity } from './entity/property.entity';
 import { PropertyController } from './property.controller';
-import { RoleGuard } from '../role/role.guard';
 import { PropertyService } from './property.service';
+import { CaslProperty } from '../../base/casl/casl.property';
 
 @Module({
   imports: [TypeOrmModule.forFeature([PropertyEntity], connectionName)],
@@ -14,6 +14,7 @@ import { PropertyService } from './property.service';
   providers: [
     PropertyService,
     SettingService,
+    CaslProperty,
     //{ provide: APP_GUARD, useClass: RoleGuard },
   ],
 })

@@ -3,13 +3,14 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
   Put,
   Request,
+  UnauthorizedException,
   UploadedFile,
-  UploadedFiles,
   UseGuards,
   UseInterceptors,
   UsePipes,
@@ -29,6 +30,7 @@ import { v4 as uuid } from 'uuid';
 import { Roles } from '../user/user.role.decorator';
 import { Role } from '../role/enum.role';
 import { RoleGuard } from '../role/role.guard';
+import { Action, CaslProperty } from 'src/base/casl/casl.property';
 const storage = new Storage();
 
 @Controller('property')
@@ -38,6 +40,7 @@ export class PropertyController {
   constructor(
     private propertyService: PropertyService,
     private settingService: SettingService,
+    private caslProperty: CaslProperty,
   ) {
     this.bucketName = this.settingService.bucket.name;
     this.bucket = storage.bucket(this.bucketName);
@@ -107,14 +110,28 @@ export class PropertyController {
   }
 
   @Put('/:id')
-  async update(@Body() body, @Param() param) {
-    return await this.propertyService.update(param.id, {
-      ...body,
-      type: PropertyType[body.type],
-    });
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(Role.User, Role.Admin)
+  async update(@Body() body, @Param() param, @Request() req) {
+    const ability = this.caslProperty.createForUser(req.user);
+    const property = await this.propertyService.findOne(param.id);
+    if (property) {
+      if (ability.can(Action.Update, property)) {
+        return await this.propertyService.update(param.id, {
+          ...body,
+          type: PropertyType[body.type],
+        });
+      } else {
+        throw new UnauthorizedException();
+      }
+    } else {
+      throw new NotFoundException();
+    }
   }
 
   @Delete('/:id')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles(Role.User, Role.Admin)
   async delete(@Param() param) {
     return await this.propertyService.delete(param.id);
   }

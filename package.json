@@ -27,6 +27,7 @@
     "db:seed": "npx nestjs-command db:seed"
   },
   "dependencies": {
+    "@casl/ability": "^5.3.1",
     "@google-cloud/logging-winston": "^4.0.5",
     "@google-cloud/storage": "^5.8.5",
     "@nestjs/common": "^7.5.1",

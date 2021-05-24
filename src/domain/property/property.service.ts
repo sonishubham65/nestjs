@@ -26,14 +26,9 @@ export class PropertyService {
   }
 
   async findOne(id) {
-    return await this.propertyEntityRepositry.findOne(
-      {
-        id: id,
-      },
-      {
-        withDeleted: true,
-      },
-    );
+    return await this.propertyEntityRepositry.findOne({
+      id: id,
+    });
   }
 
   async create(body) {
