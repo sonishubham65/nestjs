@@ -1,7 +1,6 @@
 import { BaseEntity } from '../../../base/entity/base.entity';
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { UserEntity } from '../../../../src/domain/user/entity/user.entity';
-import { Role } from '../enum.role';
 
 @Entity()
 export class RoleEntity extends BaseEntity {

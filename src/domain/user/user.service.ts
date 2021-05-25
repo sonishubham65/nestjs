@@ -36,8 +36,11 @@ export class UserService {
     });
   }
 
-  async findByEmail(email) {
-    return await this.userEntityRepositry.findOne(
+  async findByEmail(email, manager?: EntityManager) {
+    return await (manager
+      ? manager.getCustomRepository(this.userEntityRepositry)
+      : this.userEntityRepositry
+    ).findOne(
       {
         email: email,
       },
@@ -47,7 +50,7 @@ export class UserService {
     );
   }
 
-  async create(body, manager: EntityManager) {
+  async create(body, manager?: EntityManager) {
     return await (manager
       ? manager.getCustomRepository(this.userEntityRepositry)
       : this.userEntityRepositry

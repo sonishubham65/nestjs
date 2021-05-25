@@ -58,7 +58,7 @@ export class UserController {
     );
     body.password = password;
 
-    let user = await this.userService.findByEmail(body.email);
+    let user = await this.userService.findByEmail(body.email, manager);
     if (user) {
       throw new ConflictException('That email address is already registered.');
     }

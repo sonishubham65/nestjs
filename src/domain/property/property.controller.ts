@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   NotFoundException,
   Param,
   Patch,
@@ -30,7 +32,7 @@ import { v4 as uuid } from 'uuid';
 import { Roles } from '../user/user.role.decorator';
 import { Role } from '../role/enum.role';
 import { RoleGuard } from '../role/role.guard';
-import { Action, CaslProperty } from 'src/base/casl/casl.property';
+import { Action, CaslProperty } from './casl.property';
 const storage = new Storage();
 
 @Controller('property')
@@ -112,6 +114,7 @@ export class PropertyController {
   @Put('/:id')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(Role.User, Role.Admin)
+  @HttpCode(HttpStatus.ACCEPTED)
   async update(@Body() body, @Param() param, @Request() req) {
     const ability = this.caslProperty.createForUser(req.user);
     const property = await this.propertyService.findOne(param.id);
