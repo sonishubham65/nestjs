@@ -1,5 +1,12 @@
 import { BaseEntity } from '../../../base/entity/base.entity';
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  RelationId,
+} from 'typeorm';
 import { UserEntity } from '../../../../src/domain/user/entity/user.entity';
 import { PropertyType } from './property.type.enum';
 
@@ -17,17 +24,19 @@ export class PropertyEntity extends BaseEntity {
   @Column()
   sqft: number;
 
+  @Column({ default: 'east' })
+  facing: string;
+
   @Column()
   address: string;
-
-  @Column({ nullable: true })
-  userId: string;
 
   @ManyToOne((type) => UserEntity, (user) => user.properties, {
     cascade: true,
     onDelete: 'CASCADE',
   })
   user: UserEntity;
+  @RelationId((property: PropertyEntity) => property.user) // you need to specify target relation
+  userId: string;
 
   @Column({
     type: 'enum',

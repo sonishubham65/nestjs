@@ -18,17 +18,21 @@ export class PropertyService {
     );
   }
 
-  async findAll() {
+  async findAll(where = {}, order = { id: 'desc' }, page = 1, limit = 10) {
+    limit = Math.min(limit, 100);
+    page = Math.max(page, 1);
+    const offset = (page - 1) * limit;
+
     return await this.propertyEntityRepositry.find({
       where: {},
-      take: 10,
+      take: limit,
+      offset: offset,
+      order: order,
     });
   }
 
   async findOne(id) {
-    return await this.propertyEntityRepositry.findOne({
-      id: id,
-    });
+    return await this.propertyEntityRepositry.findOne({ id });
   }
 
   async create(body) {

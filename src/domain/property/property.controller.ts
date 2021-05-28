@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Request,
   UnauthorizedException,
   UploadedFile,
@@ -21,18 +22,16 @@ import {
 import { PropertyType } from './entity/property.type.enum';
 import { PropertyService } from './property.service';
 import { JwtAuthGuard } from '../../base/auth/jwt-auth.guard';
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-} from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Storage } from '@google-cloud/storage';
 import { SettingService } from 'src/base/setting/setting.service';
-import { PropertyAdd } from './property.dto';
+import { PropertyAdd, PropertyList } from './property.dto';
 import { v4 as uuid } from 'uuid';
 import { Roles } from '../user/user.role.decorator';
 import { Role } from '../role/enum.role';
 import { RoleGuard } from '../role/role.guard';
 import { Action, CaslProperty } from './casl.property';
+import { Logger } from 'src/base/logger/logger.decorator';
 const storage = new Storage();
 
 @Controller('property')
@@ -48,19 +47,34 @@ export class PropertyController {
     this.bucket = storage.bucket(this.bucketName);
   }
   @Get()
-  async properties() {
-    return await this.propertyService.findAll();
+  @Roles(Role.User, Role.Admin)
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
+  async properties(@Query() query: PropertyList) {
+    console.log(query);
+    // return await this.propertyService.findAll(
+    //   query.where,
+    //   query.order,
+    //   query.page,
+    //   query.limit,
+    // );
   }
 
   @Get('/:id')
-  async property(@Param() param) {
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async property(@Param() param, @Logger() logger) {
     return await this.propertyService.findOne(param.id);
   }
 
   @Post()
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
-  async create(@Request() req, @Body() body: PropertyAdd) {
+  async create(@Request() req, @Body() body: PropertyAdd, @Logger() logger) {
     return await this.propertyService.create({
       ...body,
       userId: req.user.id,
@@ -77,6 +91,7 @@ export class PropertyController {
     @Request() req,
     @Param() param,
     @UploadedFile() image: Express.Multer.File,
+    @Logger() logger,
   ) {
     const url = await new Promise((resolve, reject) => {
       try {
@@ -115,12 +130,12 @@ export class PropertyController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(Role.User, Role.Admin)
   @HttpCode(HttpStatus.ACCEPTED)
-  async update(@Body() body, @Param() param, @Request() req) {
+  async update(@Body() body, @Param() param, @Request() req, @Logger() logger) {
     const ability = this.caslProperty.createForUser(req.user);
     const property = await this.propertyService.findOne(param.id);
     if (property) {
       if (ability.can(Action.Update, property)) {
-        return await this.propertyService.update(param.id, {
+        return await this.propertyService.update(property.id, {
           ...body,
           type: PropertyType[body.type],
         });

@@ -31,9 +31,7 @@ export class UserService {
   }
 
   async findOne(id) {
-    return await this.userEntityRepositry.findOne({
-      id: id,
-    });
+    return await this.userEntityRepositry.findOne(id);
   }
 
   async findByEmail(email, manager?: EntityManager) {
@@ -50,7 +48,7 @@ export class UserService {
     );
   }
 
-  async create(body, manager?: EntityManager) {
+  async create(logger, body, manager?: EntityManager) {
     return await (manager
       ? manager.getCustomRepository(this.userEntityRepositry)
       : this.userEntityRepositry

@@ -1,15 +1,7 @@
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsString,
   IsEnum,
-  IsNumberString,
-  IsOptional,
-  IsEmail,
-  IsLatitude,
-  IsLongitude,
-  IsLowercase,
-  IsMilitaryTime,
-  IsPhoneNumber,
   IsNotEmpty,
   IsNumber,
   IsInt,
@@ -17,8 +9,11 @@ import {
   MaxLength,
   Min,
   Max,
+  IsObject,
+  ValidateNested,
+  ValidateIf,
 } from 'class-validator';
-import { IsValidString } from 'src/base/decorators/string.decorator';
+import { IsValidString } from '../../../src/base/decorators/string.decorator';
 import { PropertyType } from './entity/property.type.enum';
 
 export class PropertyAdd {
@@ -64,4 +59,49 @@ export class PropertyAdd {
   @IsNumber()
   @IsInt()
   sqft;
+}
+
+class ValueRelation {
+  @IsString()
+  value;
+
+  @IsEnum({
+    MoreThan: 'MoreThan',
+    LessThan: 'LessThan',
+    MoreThanOrEqual: 'MoreThanOrEqual',
+    LessThanOrEqual: 'LessThanOrEqual',
+    Equal: 'Equal',
+    ILike: 'ILike',
+    Like: 'Like',
+  })
+  relation;
+}
+class WhereCondition {
+  @ValidateIf((o) => Object.keys(o.sqft).length !== 0)
+  @IsObject()
+  //@Type(() => ValueRelation)
+  sqft: ValueRelation;
+}
+
+export class PropertyList {
+  @Transform((val) => JSON.parse(val.value))
+  @IsObject()
+  @Type(() => WhereCondition)
+  where: WhereCondition;
+
+  // where: WhereCondition;
+
+  @Transform((val) => JSON.parse(val.value))
+  @IsObject()
+  order;
+
+  @Transform((val) => parseInt(val.value))
+  @IsNotEmpty()
+  @IsNumber()
+  @IsInt()
+  page;
+
+  @Transform((val) => parseInt(val.value))
+  @IsEnum([2, 10, 20, 30])
+  limit;
 }

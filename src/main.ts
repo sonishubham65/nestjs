@@ -3,8 +3,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { LoggerMiddleware } from './base/logger/logger.middleware';
 import { SettingService } from './base/setting/setting.service';
-import { HttpStatus } from '@nestjs/common';
-import { ValidationPipe } from './base/pipes/validation.pipe';
+import { HttpStatus, ValidationPipe } from '@nestjs/common';
 import { LoggerException } from './base/logger/logger.exception';
 
 async function bootstrap() {
@@ -16,14 +15,14 @@ async function bootstrap() {
     },
   );
   app.use(LoggerMiddleware);
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-    }),
-  );
+  // app.useGlobalPipes(
+  //   new ValidationPipe({
+  //     transform: true,
+  //     whitelist: true,
+  //     forbidNonWhitelisted: true,
+  //     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+  //   }),
+  // );
   app.useGlobalFilters(new LoggerException());
   await app.listen(3000);
 }

@@ -7,6 +7,7 @@ import { PropertyEntity } from './entity/property.entity';
 import { PropertyController } from './property.controller';
 import { PropertyService } from './property.service';
 import { CaslProperty } from './casl.property';
+import { UserService } from '../user/user.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([PropertyEntity], connectionName)],

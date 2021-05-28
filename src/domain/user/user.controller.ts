@@ -6,7 +6,6 @@ import {
   Post,
   UseGuards,
   Request,
-  ServiceUnavailableException,
   ConflictException,
 } from '@nestjs/common';
 import { SettingService } from 'src/base/setting/setting.service';
@@ -15,12 +14,7 @@ import { UserService } from './user.service';
 import { LocalAuthGuard } from '../../base/auth/local-auth.guard';
 import { AuthService } from 'src/base/auth/auth.service';
 import { Logger } from '../../base/logger/logger.decorator';
-import {
-  Connection,
-  EntityManager,
-  Transaction,
-  TransactionManager,
-} from 'typeorm';
+import { EntityManager, Transaction, TransactionManager } from 'typeorm';
 import { RoleService } from '../role/role.service';
 import { Role } from '../role/enum.role';
 import { connectionName } from 'src/base/database/database.constant';
@@ -63,7 +57,7 @@ export class UserController {
       throw new ConflictException('That email address is already registered.');
     }
 
-    user = await this.userService.create({ ...body }, manager);
+    user = await this.userService.create(logger, { ...body }, manager);
     const userId = user?.identifiers[0].id;
     await this.roleService.create(userId, Role.User, manager);
     return user;
