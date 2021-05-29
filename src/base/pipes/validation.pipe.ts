@@ -21,53 +21,47 @@ export interface ValidationPipeOptions extends ValidatorOptions {
 
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
-  options;
-  constructor(options) {
-    this.options = options;
-  }
-  async transform(value, metadata: ArgumentMetadata) {
-    if (!value) {
-      throw new BadRequestException('No data submitted');
+  async transform(value: any, metadata: ArgumentMetadata) {
+    if (value instanceof Object && this.isEmpty(value)) {
+      throw new HttpException(
+        `Validation failed: No Body provided`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
-
     const { metatype } = metadata;
     if (!metatype || !this.toValidate(metatype)) {
       return value;
     }
     const object = plainToClass(metatype, value);
-    const errors = await validate(object, this.options);
-    if (errors.length > 0) {
-      throw new HttpException(
-        {
-          message: 'Data validation failed',
-          error: 'validation_fail',
-          errors: this.buildError(errors),
-        },
-        this.options.errorHttpStatusCode || HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+    const errorsList = await validate(object);
+    if (errorsList.length > 0) {
+      const errors = [];
+      for (const error of errorsList) {
+        const errorsObject = error.constraints;
+        const { isNotEmpty } = errorsObject;
+        if (isNotEmpty) {
+          const parameter = isNotEmpty.split(' ')[0];
+          errors.push({
+            title: `The ${parameter} parameter is required.`,
+            parameter: `${parameter}`,
+          });
+        }
+      }
+      if (errors.length > 0) {
+        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+      }
     }
     return value;
-  }
-
-  private buildError(errors) {
-    const result = {};
-    errors.forEach((el) => {
-      let prop = el.property;
-      Object.entries(el.constraints).forEach((constraint) => {
-        console.log(constraint);
-        if (!result[prop]) result[prop] = [];
-        const message: any = constraint[1];
-        result[prop].push({
-          type: constraint[0],
-          message: _.upperFirst(constraint[1]),
-        });
-      });
-    });
-    return result;
   }
 
   private toValidate(metatype): boolean {
     const types = [String, Boolean, Number, Array, Object];
     return !types.find((type) => metatype === type);
+  }
+  private isEmpty(value: any) {
+    if (Object.keys(value).length > 0) {
+      return false;
+    }
+    return true;
   }
 }

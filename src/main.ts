@@ -5,6 +5,7 @@ import { LoggerMiddleware } from './base/logger/logger.middleware';
 import { SettingService } from './base/setting/setting.service';
 import { HttpStatus, ValidationPipe } from '@nestjs/common';
 import { LoggerException } from './base/logger/logger.exception';
+import { TransfromerMiddleware } from './base/middlewares/transformer.middleware';
 
 async function bootstrap() {
   const settingService = new SettingService();
@@ -15,14 +16,15 @@ async function bootstrap() {
     },
   );
   app.use(LoggerMiddleware);
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     transform: true,
-  //     whitelist: true,
-  //     forbidNonWhitelisted: true,
-  //     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-  //   }),
-  // );
+  app.use(TransfromerMiddleware);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      //forbidNonWhitelisted: true,
+      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+    }),
+  );
   app.useGlobalFilters(new LoggerException());
   await app.listen(3000);
 }

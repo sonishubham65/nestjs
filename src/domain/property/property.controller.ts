@@ -48,13 +48,6 @@ export class PropertyController {
   }
   @Get()
   @Roles(Role.User, Role.Admin)
-  @UsePipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  )
   async properties(@Query() query: PropertyList) {
     console.log(query);
     // return await this.propertyService.findAll(
@@ -66,14 +59,12 @@ export class PropertyController {
   }
 
   @Get('/:id')
-  @UsePipes(new ValidationPipe({ transform: true }))
   async property(@Param() param, @Logger() logger) {
     return await this.propertyService.findOne(param.id);
   }
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new ValidationPipe({ transform: true }))
   async create(@Request() req, @Body() body: PropertyAdd, @Logger() logger) {
     return await this.propertyService.create({
       ...body,
@@ -86,7 +77,6 @@ export class PropertyController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles(Role.User, Role.Admin)
   @UseInterceptors(FileInterceptor('cover'))
-  @UsePipes(new ValidationPipe({ transform: true }))
   async cover(
     @Request() req,
     @Param() param,

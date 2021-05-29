@@ -11,7 +11,6 @@ import {
   Max,
   IsObject,
   ValidateNested,
-  ValidateIf,
 } from 'class-validator';
 import { IsValidString } from '../../../src/base/decorators/string.decorator';
 import { PropertyType } from './entity/property.type.enum';
@@ -77,21 +76,18 @@ class ValueRelation {
   relation;
 }
 class WhereCondition {
-  @ValidateIf((o) => Object.keys(o.sqft).length !== 0)
   @IsObject()
-  //@Type(() => ValueRelation)
-  sqft: ValueRelation;
+  @ValidateNested()
+  @Type(() => ValueRelation)
+  sqft;
 }
 
 export class PropertyList {
-  @Transform((val) => JSON.parse(val.value))
   @IsObject()
+  @ValidateNested()
   @Type(() => WhereCondition)
   where: WhereCondition;
 
-  // where: WhereCondition;
-
-  @Transform((val) => JSON.parse(val.value))
   @IsObject()
   order;
 
