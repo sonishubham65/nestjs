@@ -1,4 +1,9 @@
-import { DynamicModule, MiddlewareConsumer } from '@nestjs/common';
+import {
+  CacheInterceptor,
+  CacheModule,
+  DynamicModule,
+  MiddlewareConsumer,
+} from '@nestjs/common';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
 import { AppController } from './app.controller';
@@ -8,6 +13,7 @@ import { DomainModule } from './domain/domain.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { SettingService } from './base/setting/setting.service';
 import { LoggerInterceptor } from './base/logger/logger.interceptor';
+
 export class AppModule {
   static forRoot(settingService: SettingService): DynamicModule {
     const Redis = require('ioredis');

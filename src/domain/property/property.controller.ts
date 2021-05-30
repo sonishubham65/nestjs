@@ -1,10 +1,14 @@
 import {
   Body,
+  CacheKey,
+  CacheTTL,
+  CACHE_MANAGER,
   Controller,
   Delete,
   Get,
   HttpCode,
   HttpStatus,
+  Inject,
   NotFoundException,
   Param,
   Patch,
@@ -32,6 +36,7 @@ import { Role } from '../role/enum.role';
 import { RoleGuard } from '../role/role.guard';
 import { Action, CaslProperty } from './casl.property';
 import { Logger } from 'src/base/logger/logger.decorator';
+import { Cache } from 'cache-manager';
 const storage = new Storage();
 
 @Controller('property')
@@ -39,6 +44,7 @@ export class PropertyController {
   bucket;
   bucketName;
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private propertyService: PropertyService,
     private settingService: SettingService,
     private caslProperty: CaslProperty,
@@ -59,6 +65,8 @@ export class PropertyController {
   }
 
   @Get('/:id')
+  @CacheKey('property-get')
+  @CacheTTL(20)
   async property(@Param() param, @Logger() logger) {
     return await this.propertyService.findOne(param.id);
   }

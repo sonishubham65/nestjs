@@ -15,11 +15,6 @@ export function IsValidDate(format) {
       validator: {
         validate(value: any) {
           try {
-            console.log(
-              `moment(value, format, true)`,
-              value,
-              moment(value, format, true),
-            );
             return moment(value, format, true).isValid();
           } catch (e) {
             console.log(e);

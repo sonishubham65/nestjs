@@ -11,7 +11,6 @@ export function IsValidString(args: any = {}) {
           return value?.match(/^[a-zA-Z0-9 @$%&./#*,()+\-'|?]*$/);
         },
         defaultMessage: buildMessage((eachPrefix) => {
-          console.log(`eachPrefix`, propertyName);
           return args.message || `${propertyName} must be a valid string`;
         }),
       },
