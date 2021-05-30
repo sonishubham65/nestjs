@@ -1,5 +1,17 @@
 # Nest Js Boilerplate
 
+## Developer Setup
+
+### Installation
+
+You must be using Node 14 or higher (Recommended. May run with older versions.)
+
+```bash
+npm install -g yarn
+npm install
+npm run start:dev
+```
+
 ## Config module
 
 Config module is used to get the configuration values from yaml file.
@@ -188,3 +200,7 @@ Get timezone and offset
 moment.tz.guess(); // Moment.Js
 moment().format('Z');
 ```
+
+## Stay in touch
+
+- Author - [Shubham Soni](mailto:shubham.soni@mtxb2b.com)
