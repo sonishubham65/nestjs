@@ -1,14 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { CacheTTL, CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/typeorm';
 import { connectionName } from '../../base/database/database.constant';
 import { SettingService } from '../../base/setting/setting.service';
-import {
-  Connection,
-  EntityManager,
-  getCustomRepository,
-  Transaction,
-} from 'typeorm';
+import { Connection, EntityManager, getCustomRepository } from 'typeorm';
 import { UserEntityRepository } from './entity/user.entity.repository';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class UserService {
@@ -16,6 +12,7 @@ export class UserService {
   constructor(
     @InjectConnection(connectionName) private connection: Connection,
     private settingService: SettingService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
     this.userEntityRepositry = getCustomRepository(
       UserEntityRepository,
@@ -30,8 +27,14 @@ export class UserService {
     });
   }
 
+  @CacheTTL(30)
   async findOne(id) {
-    return await this.userEntityRepositry.findOne(id);
+    let user = await this.cacheManager.get(`user-${id}`);
+    if (!user) {
+      user = await this.userEntityRepositry.findOne(id);
+      this.cacheManager.set(`user-${id}`, user);
+    }
+    return user;
   }
 
   async findByEmail(email, manager?: EntityManager) {
@@ -55,7 +58,13 @@ export class UserService {
     ).insert(body);
   }
 
+  async update(id, body) {
+    let user = await this.cacheManager.del(`user-${id}`);
+    return await this.userEntityRepositry.update({ id: id }, body);
+  }
+
   async delete(id) {
+    let user = await this.cacheManager.del(`user-${id}`);
     return await this.userEntityRepositry.softDelete({ id: id });
   }
 }

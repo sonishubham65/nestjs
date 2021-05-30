@@ -9,13 +9,13 @@ export function IsStrongPassword(args: any = {}) {
       validator: {
         validate(value: any) {
           return value.match(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$~!%*?^&])[A-Za-z\d@$~^!%*?&]{1,100}$/,
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$~!%*?^&])[A-Za-z\d@$~^!%*?&]{1,8}$/,
           );
         },
         defaultMessage: buildMessage(
           (eachPrefix) =>
             args.message ||
-            'Password should contain atleast one uppercase, one special character.',
+            'Password should contain atleast one uppercase, one special character and upto eight charcters.',
         ),
       },
     });

@@ -6,6 +6,6 @@ import { BaseCacheModule } from './cache/cache.module';
 
 @Module({
   imports: [SettingModule, DatabaseModule, AuthModule, BaseCacheModule],
-  exports: [SettingModule, DatabaseModule, AuthModule],
+  exports: [SettingModule, DatabaseModule, AuthModule, BaseCacheModule],
 })
 export class BaseModule {}

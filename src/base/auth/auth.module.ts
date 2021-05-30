@@ -9,12 +9,14 @@ import { SettingModule } from '../setting/setting.module';
 import { UserService } from 'src/domain/user/user.service';
 import { AuthController } from './auth.controller';
 import { RoleModule } from 'src/domain/role/role.module';
+import { BaseCacheModule } from '../cache/cache.module';
 
 @Module({
   imports: [
     SettingModule,
     PassportModule,
     RoleModule,
+    BaseCacheModule,
     JwtModule.registerAsync({
       useFactory: async (settingService: SettingService) => ({
         secret: settingService.jwt.accesstoken_secret,

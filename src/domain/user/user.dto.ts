@@ -7,6 +7,7 @@ import {
   MaxLength,
 } from 'class-validator';
 import { IsValidDate } from 'src/base/decorators/date.decorator';
+import { IsStrongPassword } from 'src/base/decorators/password.decorator';
 import { IsValidString } from 'src/base/decorators/string.decorator';
 
 export class UserAdd {
@@ -37,6 +38,7 @@ export class UserAdd {
   @MinLength(8)
   @MaxLength(16)
   @IsString()
+  @IsStrongPassword()
   password;
 
   @Transform((val) => val.value?.trim())

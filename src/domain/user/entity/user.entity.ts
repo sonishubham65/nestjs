@@ -2,6 +2,7 @@ import { BaseEntity } from '../../../base/entity/base.entity';
 import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { PropertyEntity } from '../../../../src/domain/property/entity/property.entity';
 import { RoleEntity } from '../../../../src/domain/role/entity/role.entity';
+import { CacheKey } from '@nestjs/common';
 
 @Entity()
 @Index(['first_name', 'last_name']) // Multiple column index
@@ -29,5 +30,5 @@ export class UserEntity extends BaseEntity {
   properties: PropertyEntity[];
 
   @OneToMany((role) => RoleEntity, (role) => role.user)
-  roles: Promise<RoleEntity[]>;
+  roles: RoleEntity[];
 }

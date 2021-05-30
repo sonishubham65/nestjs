@@ -1,9 +1,4 @@
-import {
-  CacheInterceptor,
-  CacheModule,
-  DynamicModule,
-  MiddlewareConsumer,
-} from '@nestjs/common';
+import { DynamicModule, MiddlewareConsumer } from '@nestjs/common';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
 import { AppController } from './app.controller';

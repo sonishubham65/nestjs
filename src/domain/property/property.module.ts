@@ -7,22 +7,14 @@ import { PropertyEntity } from './entity/property.entity';
 import { PropertyController } from './property.controller';
 import { PropertyService } from './property.service';
 import { CaslProperty } from './casl.property';
-import { BaseCacheModule } from 'src/base/cache/cache.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([PropertyEntity], connectionName),
-    BaseCacheModule,
-  ],
+  imports: [TypeOrmModule.forFeature([PropertyEntity], connectionName)],
   controllers: [PropertyController],
   providers: [
     PropertyService,
     SettingService,
     CaslProperty,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
-    },
     //{ provide: APP_GUARD, useClass: RoleGuard },
   ],
 })
