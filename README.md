@@ -204,3 +204,57 @@ moment().format('Z');
 ## Stay in touch
 
 - Author - [Shubham Soni](mailto:shubham.soni@mtxb2b.com)
+
+## Transaction Manager
+
+Transaction manager allows you to make consistance operations.
+It promise you to server ACID transaction in SQL.
+You can get transaction manager and pass to different services.
+
+```Typescript
+// Controller
+@TransactionManager() manager: EntityManager,
+async create( @Body() body: UserAdd, @Logger() logger, @TransactionManager() manager: EntityManager) {
+    let user = await this.userService.findByEmail(body.email, manager);
+    user = await this.userService.create(logger, { ...body }, manager);
+    await this.roleService.create(userId, Role.User, manager);
+}
+
+// User Service
+async findByEmail(email, manager?: EntityManager) {
+    return await (manager
+        ? manager.getCustomRepository(this.userEntityRepositry)
+        : this.userEntityRepositry
+    ).findOne({ email: email },{ select: ['id', 'email', 'password', 'dob'] });
+}
+
+async create(logger, body, manager?: EntityManager) {
+    return await (manager
+        ? manager.getCustomRepository(this.userEntityRepositry)
+        : this.userEntityRepositry
+    ).insert(body);
+}
+
+// Role Service
+async create(userId, role, manager?: EntityManager) {
+    // delete the roles from Cache manager
+    return (manager
+        ? manager.getCustomRepository(this.roleEntityRepositry)
+        : this.roleEntityRepositry
+    ).insert({
+        userId: userId,
+        role: role,
+    });
+}
+```
+
+## Migration
+
+Generate migration and run everytime you push the code to cloud.
+
+- Todo: Database seed
+
+```bash
+npm run db:migration:generate
+npm run db:migrate
+```
