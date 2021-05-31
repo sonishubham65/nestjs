@@ -46,6 +46,7 @@
     "class-validator": "^0.13.1",
     "config": "^3.3.6",
     "ioredis": "^4.25.0",
+    "lodash": "^4.17.21",
     "moment-timezone": "^0.5.33",
     "mysql2": "^2.2.5",
     "nestjs-command": "^2.0.0",

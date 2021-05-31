@@ -1,8 +1,8 @@
 import { BaseEntity } from '../../../base/entity/base.entity';
-import { Column, Entity, Index, OneToMany } from 'typeorm';
+import { AfterLoad, Column, Entity, Index, OneToMany } from 'typeorm';
 import { PropertyEntity } from '../../../../src/domain/property/entity/property.entity';
 import { RoleEntity } from '../../../../src/domain/role/entity/role.entity';
-import { CacheKey } from '@nestjs/common';
+import { _ } from 'lodash';
 
 @Entity()
 @Index(['first_name', 'last_name']) // Multiple column index
@@ -12,6 +12,14 @@ export class UserEntity extends BaseEntity {
 
   @Column()
   last_name: string;
+
+  name: string;
+  @AfterLoad()
+  setComputed() {
+    this.name = _.startCase(
+      _.lowerCase(this.first_name + ' ' + this.last_name),
+    );
+  }
 
   @Column({
     type: 'timestamptz',
