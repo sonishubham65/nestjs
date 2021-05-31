@@ -201,10 +201,6 @@ moment.tz.guess(); // Moment.Js
 moment().format('Z');
 ```
 
-## Stay in touch
-
-- Author - [Shubham Soni](mailto:shubham.soni@mtxb2b.com)
-
 ## Transaction Manager
 
 Transaction manager allows you to make consistance operations.
@@ -258,3 +254,7 @@ Generate migration and run everytime you push the code to cloud.
 npm run db:migration:generate
 npm run db:migrate
 ```
+
+## Stay in touch
+
+- Author - [Shubham Soni](mailto:shubham.soni@mtxb2b.com)
